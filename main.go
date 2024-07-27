@@ -6,8 +6,10 @@ import (
 	"net/http"
 	"os"
 	"sort"
+	"strconv"
 
 	"github.com/charlottepincher/cpincher-task/calculate_pack"
+	"github.com/charlottepincher/cpincher-task/html"
 	"github.com/gorilla/mux"
 )
 
@@ -34,10 +36,32 @@ func IncomingOrder(w http.ResponseWriter, r *http.Request) {
 func main() {
 
 	router := mux.NewRouter()
-	router.HandleFunc("/", IncomingOrder)
+	router.HandleFunc("/apitest", IncomingOrder)
+	router.HandleFunc("/", HtmlTest)
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8000"
 	}
 	http.ListenAndServe(":"+port, router)
+}
+
+func HtmlTest(w http.ResponseWriter, r *http.Request) {
+
+	p := html.DashboardParams{
+		Message: "Gymshark Technical Test",
+	}
+	html.Dashboard(w, p)
+
+	if r.Method == http.MethodPost {
+		orderAmount := r.FormValue("order")
+		// Ensure pack sizes are correctly ordered before passing to function
+		sort.Ints(pack_sizes)
+		ordered, _ := strconv.Atoi(orderAmount)
+		packs := calculate_pack.CalculatePacks(ordered, pack_sizes)
+		fmt.Fprint(w, "\nOrdered: ", ordered)
+		fmt.Fprint(w, "\nPacks required: \n\n")
+		for key, value := range packs {
+			fmt.Fprintf(w, "%d: %d\n", key, value)
+		}
+	}
 }

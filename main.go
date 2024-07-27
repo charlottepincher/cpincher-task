@@ -60,8 +60,9 @@ func HtmlTest(w http.ResponseWriter, r *http.Request) {
 		packs := calculate_pack.CalculatePacks(ordered, pack_sizes)
 		fmt.Fprint(w, "\nOrdered: ", ordered)
 		fmt.Fprint(w, "\nPacks required: \n\n")
-		for key, value := range packs {
-			fmt.Fprintf(w, "%d: %d\n", key, value)
+		sort.Ints(pack_sizes)
+		for _, value := range pack_sizes {
+			fmt.Fprintf(w, "%d: %d\n", value, packs[value])
 		}
 	}
 }

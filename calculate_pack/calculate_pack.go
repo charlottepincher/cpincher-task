@@ -1,14 +1,11 @@
 package calculate_pack
 
 import (
-	"fmt"
 	"sort"
 )
 
 func CalculatePacks(ordered int, pack_sizes []int) map[int]int {
 	// This solution assumes that all pack sizes are multiples of the smallest pack size
-
-	fmt.Print("Ordered: ", ordered, "\nPack sizes: ", pack_sizes, "\n")
 
 	// Create a map with each size and quantity
 	pack_map := make(map[int]int)

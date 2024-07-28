@@ -14,8 +14,8 @@ var (
 )
 
 type DashboardParams struct {
-	Title   string
-	Message string
+	Ordered int
+	Packs   []string
 }
 
 func Dashboard(w io.Writer, p DashboardParams) error {

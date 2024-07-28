@@ -13,12 +13,27 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// Set the pack sizes from the example
-// TODO: Could make this so it's read in from a config json instead?
-var pack_sizes = []int{250, 500, 1000, 2000, 5000}
+type Config struct {
+	PackSizes []int `json:"packs"`
+}
 
+// Used if the API is directly queried
 type OrderAmount struct {
 	Items int `json:"order"`
+}
+
+var pack_sizes []int
+
+func GetConfig(file string) Config {
+	var config Config
+	configFile, err := os.Open(file)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	defer configFile.Close()
+	jsonParser := json.NewDecoder(configFile)
+	jsonParser.Decode(&config)
+	return config
 }
 
 func IncomingOrder(w http.ResponseWriter, r *http.Request) {
@@ -30,14 +45,22 @@ func IncomingOrder(w http.ResponseWriter, r *http.Request) {
 	// Ensure pack sizes are correctly ordered before passing to function
 	sort.Ints(pack_sizes)
 	packs := calculate_pack.CalculatePacks(ordered, pack_sizes)
-	fmt.Fprint(w, "\n", packs)
+	for _, value := range pack_sizes {
+		fmt.Fprintf(w, "%d: %d\n", value, packs[value])
+	}
+}
+
+func init() {
+	// Get pack sizes from the json config file
+	pack_sizes = GetConfig("config.json").PackSizes
 }
 
 func main() {
 
 	router := mux.NewRouter()
 	router.HandleFunc("/apitest", IncomingOrder)
-	router.HandleFunc("/", HtmlTest)
+	router.HandleFunc("/", Webpage)
+	http.Handle("/image/", http.StripPrefix("/image", http.FileServer(http.Dir("./image"))))
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8000"
@@ -45,24 +68,18 @@ func main() {
 	http.ListenAndServe(":"+port, router)
 }
 
-func HtmlTest(w http.ResponseWriter, r *http.Request) {
-
-	p := html.DashboardParams{
-		Message: "Gymshark Technical Test",
-	}
-	html.Dashboard(w, p)
-
+func Webpage(w http.ResponseWriter, r *http.Request) {
+	p := html.DashboardParams{}
 	if r.Method == http.MethodPost {
 		orderAmount := r.FormValue("order")
 		// Ensure pack sizes are correctly ordered before passing to function
 		sort.Ints(pack_sizes)
 		ordered, _ := strconv.Atoi(orderAmount)
 		packs := calculate_pack.CalculatePacks(ordered, pack_sizes)
-		fmt.Fprint(w, "\nOrdered: ", ordered)
-		fmt.Fprint(w, "\nPacks required: \n\n")
-		sort.Ints(pack_sizes)
 		for _, value := range pack_sizes {
-			fmt.Fprintf(w, "%d: %d\n", value, packs[value])
+			p.Packs = append(p.Packs, fmt.Sprintf("%d: %d\n", value, packs[value]))
 		}
+		p.Ordered = ordered
 	}
+	html.Dashboard(w, p)
 }

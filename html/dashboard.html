@@ -1,13 +1,27 @@
 {{define "content"}}
-<p>
+<h1>
     Gymshark Technical Task
-</p>
+</h1>
+<h2>
+    Charlotte Pincher
+</h2>
 <p>
      <form method="POST">
         <label for="order">Order Amount:</label>
         <input type="text" id="order" name="order"><br><br>
         <input type="submit" value="Submit">
      </form>
+</p>
+<p>
+    {{if .Ordered}}
+    Ordered: {{.Ordered}}
+</p>
+<p>
+    Packs Required:<br>
+        {{range $pack := $.Packs}}
+            {{$pack}}<br>
+        {{end}}
+    {{end}}
 </p>
 
 {{end}}

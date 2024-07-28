@@ -4,7 +4,7 @@
 A product ships in various pack sizes:
 
 - 250 Items
-- 500 Itmes
+- 500 Items
 - 1000 Items
 - 2000 Items
 - 5000 Items
@@ -60,4 +60,4 @@ The pack sizes are retrieved from the "config.json" file which must have the for
 
 To update the pack sizes for the website, change the config file and then redeploy the website.
 
-To update the pack sizes for the API, change the config file and start runing the API (instructions [here](#Run-the-API-locally))
+To update the pack sizes for the API, change the config file and start running the API (instructions [here](#Run-the-API-locally))

@@ -15,10 +15,10 @@ A customer can order any number of these items, but they will always only be giv
 2. Within the constraints of Rule 1 above, send out no more items than necessary to fulfil the order.
 3. Within the constraints of Rules 1 & 2 above, send out as few packs as possible to fulfil each order.
 
-## Solution caveat
+## Solution
 
-The solution proposed has a caveat - it assumes that all pack sizes are multiples of the smallest pack size.
-This is true for the exact problem listed above, but if pack sizes were changed so that this was no longer true, the solution no longer works.
+The solution works by first finding the greatest common divisor for all the pack sizes. It then finds the next biggest number to the ordered number that is divisible by the greatest common divisor, therefore eliminating running more computations than necessary.
+It tries to find a combination of packs to reach that number, if it is not possible then it adds the gcd to the current ordered number and once again tries to find a combination of packs to reach that number. This continues until it finds the first number that it can create packs for. If multiple combinations are found, it selects the combination with the fewest number of packs in. This ensures that only the minimum items are sent out and then that the minimum packs for the minimum items are sent.
 
 ## Website
 

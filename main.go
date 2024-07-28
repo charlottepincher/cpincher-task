@@ -24,6 +24,9 @@ type OrderAmount struct {
 
 var pack_sizes []int
 
+// gcd = Greatest Common Divisor
+var gcd int
+
 func GetConfig(file string) Config {
 	var config Config
 	configFile, err := os.Open(file)
@@ -44,7 +47,7 @@ func IncomingOrder(w http.ResponseWriter, r *http.Request) {
 
 	// Ensure pack sizes are correctly ordered before passing to function
 	sort.Ints(pack_sizes)
-	packs := calculate_pack.CalculatePacks(ordered, pack_sizes)
+	packs := calculate_pack.CalculatePacks(ordered, pack_sizes, gcd)
 	for _, value := range pack_sizes {
 		fmt.Fprintf(w, "%d: %d\n", value, packs[value])
 	}
@@ -53,6 +56,7 @@ func IncomingOrder(w http.ResponseWriter, r *http.Request) {
 func init() {
 	// Get pack sizes from the json config file
 	pack_sizes = GetConfig("config.json").PackSizes
+	gcd = calculate_pack.FindGCD(pack_sizes)
 }
 
 func main() {
@@ -75,7 +79,7 @@ func Webpage(w http.ResponseWriter, r *http.Request) {
 		// Ensure pack sizes are correctly ordered before passing to function
 		sort.Ints(pack_sizes)
 		ordered, _ := strconv.Atoi(orderAmount)
-		packs := calculate_pack.CalculatePacks(ordered, pack_sizes)
+		packs := calculate_pack.CalculatePacks(ordered, pack_sizes, gcd)
 		for _, value := range pack_sizes {
 			p.Packs = append(p.Packs, fmt.Sprintf("%d: %d\n", value, packs[value]))
 		}

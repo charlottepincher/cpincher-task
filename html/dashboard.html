@@ -12,16 +12,15 @@
         <input type="submit" value="Submit">
      </form>
 </p>
-<p>
-    {{if .Ordered}}
-    Ordered: {{.Ordered}}
-</p>
-<p>
-    Packs Required:<br>
-        {{range $pack := $.Packs}}
-            {{$pack}}<br>
-        {{end}}
-    {{end}}
-</p>
-
+{{if .Ordered}}
+<div id="answer">
+    <p>
+        <b>Ordered:</b> {{.Ordered}}<br><br>
+        <b>Packs Required:</b><br>
+            {{range $pack := $.Packs}}
+                {{$pack}}<br>
+            {{end}}
+    </p>
+</div>
+{{end}}
 {{end}}

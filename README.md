@@ -17,8 +17,18 @@ A customer can order any number of these items, but they will always only be giv
 
 ## Solution
 
-The solution works by first finding the greatest common divisor for all the pack sizes. It then finds the next biggest number to the ordered number that is divisible by the greatest common divisor, therefore eliminating running more computations than necessary.
-It tries to find a combination of packs to reach that number, if it is not possible then it adds the gcd to the current ordered number and once again tries to find a combination of packs to reach that number. This continues until it finds the first number that it can create packs for. If multiple combinations are found, it selects the combination with the fewest number of packs in. This ensures that only the minimum items are sent out and then that the minimum packs for the minimum items are sent.
+The solution works in the following way.
+
+When the API starts running:
+- Loads the config (See [Config](#Config))
+- Calculates the Greatest Common Divisor (GCD) for the pack sizes
+
+When a request is made:
+- Finds the next biggest number from the ordered number that is divisible by the GCD, therefore eliminating running more computations than necessary
+- Tries to find a combination of packs to reach that number.
+- If it is not possible then it adds the GCD to the current ordered number and once again tries to find a combination of packs to reach that number. 
+- This continues until it finds the first number that it can create packs for. 
+- If multiple combinations are found, it selects the combination with the fewest number of packs in. This ensures that only the minimum items are sent out and then that the minimum packs for the minimum items are sent.
 
 ## Website
 
